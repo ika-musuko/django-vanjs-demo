@@ -8,6 +8,62 @@ main {
 #sidebar {
   min-width: 250px;
   background: #161616;
+  padding: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+#sidebarTitle {
+  margin-right: auto;
+}
+
+#newConversation {
+  width: 100%;
+  border: none;
+  border-radius: 999em;
+  padding: 10px;
+  color: #dedede;
+  background: #323232;
+  cursor: pointer;
+}
+#newConversation:hover {
+  filter: brightness(90%);
+}
+#newConversation:active {
+  filter: brightness(70%);
+}
+
+#sidebar hr {
+  width: 100%;
+  border: 1px solid #434343;
+}
+
+#conversationsContainer {
+  overflow-y: auto;
+  width: 100%;
+}
+
+.conversations {
+  width: 100%;
+  padding: 0 10px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.conversation {
+  box-sizing: border-box;
+  padding: 8px;
+  width: 90%;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.conversation:hover {
+  border-radius: 4px;
+  background: #343434;
 }
 
 #chatContainer {
@@ -34,7 +90,7 @@ main {
 #chatMessagesContainer {
   max-height: 100%;
   width: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
 
   display: flex;
   flex-direction: column;
@@ -79,7 +135,7 @@ main {
   width: 90%;
   max-width: 800px;
   border-radius: 17px;
-  border: 0px;
+  border: none;
 
   background: #343434;
 

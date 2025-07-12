@@ -6,15 +6,11 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path("new_conversation", views.new_conversation, name="new_conversation"),
+    path("get_conversation_messages/<int:conversation_id>", views.get_conversation_messages, name="get_conversation_messages"),
     path("send_message", views.send_message, name="send_message"),
 ]
 
-sse_channels = ["botchunk"]
 urlpatterns += [
-    path(
-        "_sse/botchunk/",
-        include(django_eventstream.urls),
-        {"channels": sse_channels},
-        name="sse",
-    )
+    path("_sse/<channel>", include(django_eventstream.urls)),
 ]

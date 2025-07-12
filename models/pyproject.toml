@@ -1,11 +1,9 @@
 [project]
-name = "markov"
+name = "models"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi[dev,standard]>=0.116.1",
-    "markovify>=0.9.4",
-    "pandas>=2.3.1",
+    "fastapi[standard]>=0.116.1",
 ]

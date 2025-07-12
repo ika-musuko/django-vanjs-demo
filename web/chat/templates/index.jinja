@@ -8,6 +8,11 @@
 <main>
 
   <div id="sidebar">
+    <h2 id="sidebarTitle">DjatGPT</h2>
+    <button id="newConversation">🗣️ New Conversation</button>
+    <hr>
+    <div id="conversationsContainer">
+    </div>
   </div>
 
   <div id="chatContainer">
@@ -41,7 +46,16 @@
   class ChatArea {
     constructor() {
       // state
+      this.currentConversationId = 0;
       this.messages = van.state([]);
+      this.conversations = van.state([
+        {% for conversation in conversations %}
+        {
+          id: "{{ conversation.id }}",
+          title: "{{ conversation.title }}",
+        },
+        {% endfor %}
+      ])
 
       // init
       this.initUI();
@@ -51,12 +65,37 @@
     initUI() {
       this.ui = {};
 
+      this.ui.newConversation = document.getElementById("newConversation");
+      this.ui.newConversation.addEventListener("click", () => {
+        this.newConversation();
+      });
+
+      this.ui.conversationsContainer = document.getElementById("conversationsContainer");
+      van.add(
+        this.ui.conversationsContainer,
+        () => van.tags.div(
+          { class: "conversations" },
+          this.conversations.val.map(
+            conversation =>
+              van.tags.div(
+                {
+                  class: "conversation",
+                  onclick: async () => {
+                    await this.loadConversation(conversation.id);
+                  }
+                },
+                conversation.title
+              )
+          )
+        )
+      );
+
       this.ui.chatInput = document.getElementById("chatInput");
       this.ui.chatInput.addEventListener("input",  this.adjustChatInputHeight.bind(this));
-      this.ui.chatInput.addEventListener("keypress", (e) => {
+      this.ui.chatInput.addEventListener("keypress", async (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
-          this.submitMessage();
+          await this.submitMessage();
         }
       });
       this.adjustChatInputHeight(); // call to prevent height jump when initially typing
@@ -85,6 +124,41 @@
       });
     }
 
+    async loadConversation(id) {
+      this.messages.val = [];
+      const response = await fetch(`/get_conversation_messages/${id}`,
+        {
+          method: "GET",
+          headers: {
+            'X-CSRFToken': '{{ csrf_token|escapejs }}',
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (!response.ok) {
+        console.log(response.error);
+      }
+
+      const responseJson = await response.json();
+      console.log(responseJson);
+      this.messages.val = responseJson.messages;
+    }
+
+    newConversation() {
+      console.log("newConversation");
+      this.messages.val = [];
+      fetch("{{ url('new_conversation')|escapejs }}",
+        {
+          method: "POST",
+          headers: {
+            'X-CSRFToken': '{{ csrf_token|escapejs }}',
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+    }
+
     adjustChatMessagesScroll() {
       this.ui.chatMessagesContainer.scrollTop = this.ui.chatMessagesContainer.scrollHeight;
       const lastMessage = document.getElementById("chatMessages").lastChild;
@@ -104,8 +178,17 @@
     }
 
     initSSE() {
-      const eventSource = new ReconnectingEventSource("/_sse/botchunk");
-      eventSource.onmessage = async (event) => {
+      const conversationUpdate = new ReconnectingEventSource("/_sse/conversation_update");
+      conversationUpdate.addEventListener("message", async (event) => {
+        console.log("sse: conversations_update")
+        const data = JSON.parse(event.data);
+        console.log(data);
+        this.conversations.val = data.conversations;
+      });
+
+      const botChunk = new ReconnectingEventSource("/_sse/bot_chunk");
+      botChunk.addEventListener("message", async (event) => {
+        console.log("sse: bot_chunk")
         const message = JSON.parse(event.data);
         if (message.stop) {
           this.enableChatInput(true);
@@ -126,10 +209,10 @@
 
         lastMessage.text += message.chunk;
         this.messages.val = [...this.messages.val];
-      };
+      });
     }
 
-    submitMessage() {
+    async submitMessage() {
       const userMessage = this.ui.chatInput.value.trim();
       if (!userMessage) return;
 
@@ -142,16 +225,24 @@
       ];
 
       this.enableChatInput(false);
-      fetch(`{{ url('send_message')|escapejs }}`,
+
+      const response = await fetch(`{{ url('send_message')|escapejs }}`,
         {
           method: "POST",
           headers: {
             'X-CSRFToken': '{{ csrf_token|escapejs }}',
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ "message": userMessage }),
+          body: JSON.stringify({
+            "message": userMessage,
+            "conversation_id": this.currentConversationId,
+          }),
         }
       );
+
+      const responseJson = await response.json();
+      console.log(responseJson);
+      this.currentConversationId = responseJson.conversation_id;
     }
   }
 
