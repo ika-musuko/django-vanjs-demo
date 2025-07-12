@@ -4,6 +4,8 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
+from .helpers import send_message_and_queue_reply
+
 
 def index(request):
     context = {}
@@ -13,7 +15,10 @@ def index(request):
 @require_POST
 def send_message(request):
     data = json.loads(request.body)
-    print(data["message"])
+    message = data["message"]
+
+    send_message_and_queue_reply(message)
+
     return JsonResponse({}, status=200)
 
 

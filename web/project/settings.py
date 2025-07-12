@@ -32,6 +32,8 @@ LIVERELOAD_PORT = os.getenv("LIVERELOAD_PORT", 35729)
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
+    "django_eventstream",
     "django_jinja",
     "corsheaders",
     "livereload",
