@@ -23,5 +23,37 @@
 </div>
 
 <script>
+{
+  class ChatArea {
+    constructor() {
+      this.initUI();
+    }
+
+    initUI() {
+      this.ui = {};
+
+      this.ui.chatInput = document.getElementById("chatInput");
+      this.ui.chatInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          this.submitMessage();
+        }
+      });
+
+      this.ui.chatSubmit = document.getElementById("chatSubmit");
+      this.ui.chatSubmit.addEventListener("click", () => {
+        this.submitMessage();
+      });
+    }
+
+    submitMessage() {
+      alert(this.ui.chatInput.value);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    new ChatArea();
+  });
+}
 </script>
 {% endblock %}

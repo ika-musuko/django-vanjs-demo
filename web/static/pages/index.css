@@ -54,7 +54,6 @@
   background: transparent;
   color: white;
 }
-
 #chatInput:focus {
   outline: none;
   box-shadow: none;
@@ -74,14 +73,12 @@
   color: #343434;
   font-weight: 700;
 }
-
 #chatSubmit:enabled:hover {
   background: #bcbcbc;
 }
 #chatSubmit:enabled:active {
   background: #ababab;
 }
-
 #chatSubmit:disabled {
   background: #898989;
 }
