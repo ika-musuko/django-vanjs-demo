@@ -46,7 +46,7 @@ def generation_thread(prompt, streamer):
         **inputs,
         streamer=streamer,
         do_sample=True,
-        max_new_tokens=250,      # Changed: Increased for longer messages
+        max_new_tokens=250,
         temperature=0.8,
         top_k=50,
         repetition_penalty=1.2,
@@ -61,7 +61,6 @@ def stream_generator(prompt: str):
     thread.start()
     while True:
         token = q.get()
-        # Changed: Added check to filter out the end-of-text token string
         if token is None or token == tokenizer.eos_token:
             break
         yield token
@@ -70,5 +69,5 @@ def stream_generator(prompt: str):
 def generate_reply(request: Message):
     if not model or not tokenizer:
         raise HTTPException(status_code=503, detail="Text generation model is not available.")
-    
+
     return StreamingResponse(stream_generator(request.message), media_type="text/plain")

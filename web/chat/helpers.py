@@ -11,9 +11,6 @@ def send_message_and_queue_reply(message):
     _stream_reply_from_llm(message)
 
 def _stream_reply_from_llm(message):
-    """
-    Connects to the LLM's streaming endpoint and forwards chunks in real-time.
-    """
     try:
         with requests.post(
             LLM_API_URL,
