@@ -10,11 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -26,20 +26,31 @@ SECRET_KEY = "django-insecure-=9e169b)2-npf82wpc1#((pdp=j1$-=*a05k2yia((&sdipzxx
 DEBUG = True
 
 ALLOWED_HOSTS = []
+LIVERELOAD_PORT = os.getenv("LIVERELOAD_PORT", 35729)
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    "django_jinja",
+    "corsheaders",
+    "livereload",
+]
+
+INSTALLED_APPS += [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "chat",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "livereload.middleware.LiveReloadScript",
+
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -52,6 +63,17 @@ MIDDLEWARE = [
 ROOT_URLCONF = "project.urls"
 
 TEMPLATES = [
+    {
+        "BACKEND": "django_jinja.jinja2.Jinja2",
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "globals": {
+                "livereload_script": __import__(
+                    "livereload.templatetags.livereload_tags"
+                ).templatetags.livereload_tags.livereload_script,
+            },
+        },
+    },
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [],
@@ -67,6 +89,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "project.wsgi.application"
+ASGI_APPLICATION = "project.asgi.application"
 
 
 # Database
@@ -114,9 +137,42 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    BASE_DIR / "static/design-system/static",
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s"
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "NOTSET",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        }
+    },
+    "loggers": {
+        "": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "propagate": False,
+            "level": "ERROR",
+        },
+    },
+}

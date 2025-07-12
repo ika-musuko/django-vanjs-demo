@@ -1,0 +1,14 @@
+{% extends "base.jinja" %}
+
+{% block body %}
+  <div>hello from jinja</div>
+  <div id="vanJsTest"></div>
+  <script>
+    van.add(
+      document.getElementById("vanJsTest"),
+      van.tags.div(
+        "hello from vanjs"
+      )
+    )
+  </script>
+{% endblock %}

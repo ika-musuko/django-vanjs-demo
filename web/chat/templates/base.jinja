@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- django library includes -->
+    <script src="{{ static('django_eventstream/eventsource.min.js') }}"></script>
+    <script src="{{ static('django_eventstream/reconnecting-eventsource.js') }}"></script>
+
+    <!-- van.js includes -->
+    <script src="{{ static('vendor/van.min.js') }}"></script>
+
+    <!-- prevent page flash, only show page when everything is loaded -->
+    <style>
+      body {
+        opacity: 0;
+      }
+    </style>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        document.body.style.opacity = "1";
+      });
+    </script>
+
+    {% block head %}
+    {% endblock %}
+
+    {{ livereload_script()|safe }}
+    <title>
+      DjatGPT
+    </title>
+  </head>
+
+  <body>
+    {% block body %}
+    {% endblock %}
+  </body>
+</html>
