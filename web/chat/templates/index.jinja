@@ -51,12 +51,14 @@
       this.ui = {};
 
       this.ui.chatInput = document.getElementById("chatInput");
+      this.ui.chatInput.addEventListener("input",  this.adjustChatInputHeight.bind(this));
       this.ui.chatInput.addEventListener("keypress", (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
           this.submitMessage();
         }
       });
+      this.adjustChatInputHeight(); // call to prevent height jump when initially typing
 
       this.ui.chatSubmit = document.getElementById("chatSubmit");
       this.ui.chatSubmit.addEventListener("click", () => {
@@ -68,7 +70,7 @@
         this.ui.chatMessagesContainer,
         () => van.tags.div(
           { id: "chatMessages" },
-          ...this.messages.val.map(
+          this.messages.val.map(
             message =>
               message.fromUser
                 ? UserMessage(message)
@@ -76,13 +78,31 @@
           )
         )
       );
+      van.derive(() => {
+        this.messages.val;
+        setTimeout(this.scrollToLastMessage.bind(this), 0);
+      });
+    }
+
+    scrollToLastMessage() {
+      this.ui.chatMessagesContainer.scrollTop = this.ui.chatMessagesContainer.scrollHeight;
+      const lastMessage = document.getElementById("chatMessages").lastChild;
+      if (!lastMessage) return;
+      lastMessage.scrollIntoView({ block: "start" });
+    }
+
+    adjustChatInputHeight() {
+      this.ui.chatInput.style.height = 'auto'; // force height reset
+      const newHeight = Math.min(this.ui.chatInput.scrollHeight, 200);
+      this.ui.chatInput.style.height = newHeight + 'px';
     }
 
     submitMessage() {
-      if (!this.ui.chatInput.value) return;
+      const userMessage = this.ui.chatInput.value.trim();
+      if (!userMessage) return;
 
-      const userMessage = this.ui.chatInput.value;
       this.ui.chatInput.value = "";
+      this.adjustChatInputHeight();
 
       this.messages.val = [
         ...this.messages.val,

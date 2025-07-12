@@ -1,17 +1,8 @@
-* textarea {
-  font-family: inherit;
-  font-size: inherit;
-  color: inherit;
-}
-
 main {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: row;
-  font-family: Helvetica;
-  font-size: 16px;
-  color: #dedede;
 }
 
 #sidebar {
@@ -22,7 +13,7 @@ main {
 #chatContainer {
   flex-grow: 1;
   background: #232323;
-  padding: 20px;
+  padding-bottom: 13px;
 
   display: flex;
   flex-direction: column;
@@ -32,7 +23,6 @@ main {
 #chat {
   height: 100%;
   width: 100%;
-  max-width: 800px;
 
   display: flex;
   flex-direction: column;
@@ -43,39 +33,51 @@ main {
 
 #chatMessagesContainer {
   max-height: 100%;
-  width: 100%;
+  width: 90%;
   overflow-y: scroll;
 
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
+  align-items: center;
 }
 
 #chatMessages {
-  padding: 10px;
+  width: 100%;
+  max-width: 800px;
+  padding-top: 20px;
+  padding-bottom: 40vh;
+
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
 .bot-message {
-  padding: 10px;
+  max-width: 100%;
+  padding: 10px 0;
+
+  word-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 .user-message {
+  max-width: 70%;
   padding: 10px 15px;
+  margin-left: auto;
+
   border-radius: 30px;
   background: #343434;
-  margin-left: auto;
-  max-width: 70%;
+
   word-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 #chatInputContainer {
-  margin: auto 10px 10px;
+  margin-top: auto;
   padding: 10px;
 
-  height: 70px;
-  width: 96%;
+  width: 90%;
+  max-width: 800px;
   border-radius: 17px;
   border: 0px;
 
@@ -86,11 +88,13 @@ main {
 }
 
 #chatInput {
+  height: auto;
   resize: none;
+  overflow: auto;
+
   padding: 5px;
   margin: 0 auto;
 
-  height: 70%;
   width: 100%;
 
   border: none;
@@ -104,7 +108,7 @@ main {
 #chatSubmit {
   margin-left: auto;
 
-  height: 70%;
+  height: 30px;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
 
