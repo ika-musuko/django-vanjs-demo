@@ -80,11 +80,11 @@
       );
       van.derive(() => {
         this.messages.val;
-        setTimeout(this.scrollToLastMessage.bind(this), 0);
+        setTimeout(this.adjustChatMessagesScroll.bind(this), 0);
       });
     }
 
-    scrollToLastMessage() {
+    adjustChatMessagesScroll() {
       this.ui.chatMessagesContainer.scrollTop = this.ui.chatMessagesContainer.scrollHeight;
       const lastMessage = document.getElementById("chatMessages").lastChild;
       if (!lastMessage) return;
@@ -109,12 +109,16 @@
         { fromUser: true, text: userMessage },
       ];
 
-      setTimeout(() => {
-        this.messages.val = [
-          ...this.messages.val,
-          { fromUser: false, text: userMessage },
-        ];
-      }, 500);
+      fetch(`{{ url('send_message')|escapejs }}`,
+        {
+          method: "POST",
+          headers: {
+            'X-CSRFToken': '{{ csrf_token|escapejs }}',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ "message": userMessage }),
+        }
+      );
     }
   }
 

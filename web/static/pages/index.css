@@ -33,7 +33,7 @@ main {
 
 #chatMessagesContainer {
   max-height: 100%;
-  width: 90%;
+  width: 100%;
   overflow-y: scroll;
 
   display: flex;
@@ -42,7 +42,7 @@ main {
 }
 
 #chatMessages {
-  width: 100%;
+  width: 90%;
   max-width: 800px;
   padding-top: 20px;
   padding-bottom: 40vh;

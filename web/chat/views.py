@@ -1,8 +1,20 @@
-from django.http import HttpResponse
+import json
 
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
+from django.views.decorators.http import require_POST
+
 
 def index(request):
     context = {}
     return render(request, "index.jinja", context)
+
+
+@require_POST
+def send_message(request):
+    data = json.loads(request.body)
+    print(data["message"])
+    return JsonResponse({}, status=200)
+
+
 
