@@ -31,7 +31,7 @@ def send_message_and_queue_reply(conversation_id, message_text):
         conversation = Conversation.objects.create(title=title)
         send_conversation_list_update()
 
-    if conversation.title == "New Conversation":
+    if conversation.messages.count() < 1:
         conversation.title = title
         conversation.save()
 

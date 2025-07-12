@@ -18,6 +18,7 @@ main {
 
 #sidebarTitle {
   margin-right: auto;
+  padding-left: 8px;
 }
 
 #newConversation {
@@ -28,6 +29,7 @@ main {
   color: #dedede;
   background: #323232;
   cursor: pointer;
+  font-weight: 700;
 }
 #newConversation:hover {
   filter: brightness(90%);
@@ -57,13 +59,46 @@ main {
 .conversation {
   box-sizing: border-box;
   padding: 8px;
-  width: 90%;
+  width: 96%;
   border-radius: 4px;
   cursor: pointer;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
-.conversation:hover {
+
+.conversation-title {
+  width: 100%;
+  padding: 6px;
+}
+.conversation-title:hover {
   border-radius: 4px;
   background: #343434;
+}
+
+.conversation-delete {
+  margin-left: auto;
+  padding: 10px;
+
+  cursor: pointer;
+
+  height: 37px;
+  aspect-ratio: 1 / 1;
+
+  border: none;
+  border-radius: 5px;
+
+  background: #252525;
+  color: #989898;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.conversation-delete:hover {
+  background: #442525;
+  color: #ff8888;
 }
 
 #chatContainer {

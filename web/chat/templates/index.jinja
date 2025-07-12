@@ -9,7 +9,7 @@
 
   <div id="sidebar">
     <h2 id="sidebarTitle">DjatGPT</h2>
-    <button id="newConversation">🗣️ New Conversation</button>
+    <button id="newConversation">New Conversation</button>
     <hr>
     <div id="conversationsContainer">
     </div>
@@ -80,11 +80,27 @@
               van.tags.div(
                 {
                   class: "conversation",
-                  onclick: async () => {
-                    await this.loadConversation(conversation.id);
-                  }
                 },
-                conversation.title
+                van.tags.div(
+                  {
+                    class: "conversation-title",
+                    onclick: async () => {
+                      await this.loadConversation(conversation.id);
+                    }
+                  },
+                  conversation.title.substring(0, 22)
+                  + (conversation.title.length >22 ? "..." : "")
+                ),
+                van.tags.button(
+                  {
+                    class: "conversation-delete",
+                    onclick: async (e) => {
+                      e.stopPropagation();
+                      await this.deleteConversation(conversation.id);
+                    }
+                  },
+                  "X"
+                )
               )
           )
         )
@@ -131,7 +147,6 @@
           method: "GET",
           headers: {
             'X-CSRFToken': '{{ csrf_token|escapejs }}',
-            'Content-Type': 'application/json',
           },
         }
       );
@@ -143,10 +158,33 @@
       const responseJson = await response.json();
       console.log(responseJson);
       this.messages.val = responseJson.messages;
+      this.currentConversationId = id;
+    }
+
+    async deleteConversation(id) {
+      this.messages.val = [];
+      const response = await fetch(`/delete_conversation/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            'X-CSRFToken': '{{ csrf_token|escapejs }}',
+          },
+        }
+      );
+
+      if (!response.ok) {
+        console.log(response.error);
+      }
+
+      const responseJson = await response.json();
+      console.log(responseJson);
+      this.conversations.val = responseJson.conversations;
+      this.currentConversationId = 0;
     }
 
     newConversation() {
       console.log("newConversation");
+      this.currentConversationId = 0;
       this.messages.val = [];
       fetch("{{ url('new_conversation')|escapejs }}",
         {
