@@ -10,3 +10,7 @@ wheels/
 .venv
 
 *.sqlite3
+
+1342-0.txt
+*.csv
+.DS_Store

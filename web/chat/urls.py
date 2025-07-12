@@ -6,7 +6,7 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("send_message", views.send_message, name="send_message")
+    path("send_message", views.send_message, name="send_message"),
 ]
 
 sse_channels = ["botchunk"]

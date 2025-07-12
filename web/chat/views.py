@@ -20,6 +20,3 @@ def send_message(request):
     send_message_and_queue_reply(message)
 
     return JsonResponse({}, status=200)
-
-
-
