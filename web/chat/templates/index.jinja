@@ -5,27 +5,45 @@
 {% endblock %}
 
 {% block body %}
-<div class="main">
+<main>
 
-  <div class="sidebar">
+  <div id="sidebar">
   </div>
 
-  <div class="chat">
-    <div class="chat-history">
-    </div>
+  <div id="chatContainer">
+    <div id="chat">
+      <div id="chatMessagesContainer">
+      </div>
 
-    <div class="chat-input">
-      <textarea id="chatInput" placeholder="Ask a question"></textarea>
-      <button id="chatSubmit">▲</button>
+      <div id="chatInputContainer">
+        <textarea id="chatInput" placeholder="Ask a question"></textarea>
+        <button id="chatSubmit">▲</button>
+      </div>
     </div>
   </div>
 
-</div>
+</main>
 
 <script>
 {
+  const UserMessage = (message) =>
+    van.tags.div(
+      { class: "user-message" },
+      message.text,
+    );
+
+  const BotMessage = (message) =>
+    van.tags.div(
+      { class: "bot-message" },
+      message.text,
+    );
+
   class ChatArea {
     constructor() {
+      // state
+      this.messages = van.state([]);
+
+      // init
       this.initUI();
     }
 
@@ -44,10 +62,39 @@
       this.ui.chatSubmit.addEventListener("click", () => {
         this.submitMessage();
       });
+
+      this.ui.chatMessagesContainer = document.getElementById("chatMessagesContainer");
+      van.add(
+        this.ui.chatMessagesContainer,
+        () => van.tags.div(
+          { id: "chatMessages" },
+          ...this.messages.val.map(
+            message =>
+              message.fromUser
+                ? UserMessage(message)
+                : BotMessage(message)
+          )
+        )
+      );
     }
 
     submitMessage() {
-      alert(this.ui.chatInput.value);
+      if (!this.ui.chatInput.value) return;
+
+      const userMessage = this.ui.chatInput.value;
+      this.ui.chatInput.value = "";
+
+      this.messages.val = [
+        ...this.messages.val,
+        { fromUser: true, text: userMessage },
+      ];
+
+      setTimeout(() => {
+        this.messages.val = [
+          ...this.messages.val,
+          { fromUser: false, text: userMessage },
+        ];
+      }, 500);
     }
   }
 

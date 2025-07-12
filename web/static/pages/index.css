@@ -1,35 +1,81 @@
-.main {
+* textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+main {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: row;
+  font-family: Helvetica;
+  font-size: 16px;
+  color: #dedede;
 }
 
-.sidebar {
-  width: 250px;
+#sidebar {
+  min-width: 250px;
   background: #161616;
 }
 
-.chat {
+#chatContainer {
   flex-grow: 1;
   background: #232323;
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#chat {
+  height: 100%;
+  width: 100%;
+  max-width: 800px;
 
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 10px;
 }
 
-.chat-history {
+#chatMessagesContainer {
+  max-height: 100%;
+  width: 100%;
+  overflow-y: scroll;
+
+  display: flex;
+  flex-direction: column-reverse;
 }
 
-.chat-input {
+#chatMessages {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.bot-message {
+  padding: 10px;
+}
+
+.user-message {
+  padding: 10px 15px;
+  border-radius: 30px;
+  background: #343434;
+  margin-left: auto;
+  max-width: 70%;
+  word-wrap: break-word;
+}
+
+#chatInputContainer {
   margin: auto 10px 10px;
   padding: 10px;
 
   height: 70px;
-  width: 90%;
-  max-width: 800px;
+  width: 96%;
   border-radius: 17px;
   border: 0px;
 
@@ -47,12 +93,8 @@
   height: 70%;
   width: 100%;
 
-  font-family: Helvetica;
-  font-size: 16px;
-
   border: none;
   background: transparent;
-  color: white;
 }
 #chatInput:focus {
   outline: none;
