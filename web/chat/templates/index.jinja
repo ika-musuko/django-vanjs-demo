@@ -98,16 +98,35 @@
       this.ui.chatInput.style.height = newHeight + 'px';
     }
 
+    enableChatInput(enable) {
+      this.ui.chatInput.disabled = !enable;
+      this.ui.chatSubmit.disabled = !enable;
+    }
+
     initSSE() {
-      const eventSource = new ReconnectingEventSource("/_sse/reply");
+      const eventSource = new ReconnectingEventSource("/_sse/botchunk");
       eventSource.onmessage = async (event) => {
         const message = JSON.parse(event.data);
-        this.messages.val = [
-          ...this.messages.val,
-          { fromUser: false, text: message.reply },
-        ];
-      };
+        if (message.stop) {
+          this.enableChatInput(true);
+          return;
+        }
 
+        let end = this.messages.val.length - 1;
+        let lastMessage = this.messages.val[end];
+        console.log(lastMessage);
+        if (lastMessage.fromUser) {
+          this.messages.val = [
+            ...this.messages.val,
+            { fromUser: false, text: "" },
+          ];
+          end = this.messages.val.length - 1;
+          lastMessage = this.messages.val[end];
+        }
+
+        lastMessage.text += message.chunk;
+        this.messages.val = [...this.messages.val];
+      };
     }
 
     submitMessage() {
@@ -122,6 +141,7 @@
         { fromUser: true, text: userMessage },
       ];
 
+      this.enableChatInput(false);
       fetch(`{{ url('send_message')|escapejs }}`,
         {
           method: "POST",

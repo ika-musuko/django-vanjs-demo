@@ -9,10 +9,10 @@ urlpatterns = [
     path("send_message", views.send_message, name="send_message")
 ]
 
-sse_channels = ["reply"]
+sse_channels = ["botchunk"]
 urlpatterns += [
     path(
-        "_sse/reply/",
+        "_sse/botchunk/",
         include(django_eventstream.urls),
         {"channels": sse_channels},
         name="sse",
